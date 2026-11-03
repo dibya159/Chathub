@@ -35,7 +35,7 @@ header{padding:10px 14px;background:#171a21;border-bottom:1px solid #262a33;font
 </style>
 <script>
 window.addEventListener("error", function (e) { var x = document.getElementById("err"); if (x) x.textContent = "JS error: " + e.message; });
-setTimeout(function () { if (!window.__ok) { var x = document.getElementById("err"); if (x) x.textContent = "App load nahi hui: internet/adblock check karo ya page refresh karo"; } }, 5000);
+setTimeout(function () { if (!window.__ok) { var x = document.getElementById("err"); if (x) x.textContent = "App load nahi hui: internet/adblock check karo ya page refresh karo"; } }, 15000);
 </script>
 </head>
 <body>
@@ -63,9 +63,21 @@ setTimeout(function () { if (!window.__ok) { var x = document.getElementById("er
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, push, set, onValue, onChildAdded, onChildRemoved, remove, onDisconnect, query, limitToLast, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+const B = "https://www.gstatic.com/firebasejs/10.12.2/";
+let initializeApp, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, onAuthStateChanged, signOut;
+let getDatabase, ref, push, set, onValue, onChildAdded, onChildRemoved, remove, onDisconnect, query, limitToLast, serverTimestamp;
+try {
+  const [a, b, c] = await Promise.all([import(B + "firebase-app.js"), import(B + "firebase-auth.js"), import(B + "firebase-database.js")]);
+  ({ initializeApp } = a);
+  ({ getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, onAuthStateChanged, signOut } = b);
+  ({ getDatabase, ref, push, set, onValue, onChildAdded, onChildRemoved, remove, onDisconnect, query, limitToLast, serverTimestamp } = c);
+  const need = { initializeApp, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, onAuthStateChanged, signOut, getDatabase, ref, push, set, onValue, onChildAdded, onChildRemoved, remove, onDisconnect, query, limitToLast, serverTimestamp };
+  const missing = Object.keys(need).filter(k => typeof need[k] !== "function");
+  if (missing.length) throw new Error("missing: " + missing.join(", "));
+} catch (e) {
+  document.getElementById("err").textContent = "Load error: " + (e && e.message ? e.message : e);
+  throw e;
+}
 
 // ====== YAHAN APNA FIREBASE CONFIG PASTE KARO ======
 const firebaseConfig = {
@@ -182,6 +194,7 @@ function send() {
   $("text").value = "";
 }
 window.__ok = true;
+document.getElementById("err").textContent = "";
 $("send").onclick = send;
 
 function refreshMute() {
