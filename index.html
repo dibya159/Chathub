@@ -33,6 +33,10 @@ header{padding:10px 14px;background:#171a21;border-bottom:1px solid #262a33;font
 #adm{display:none;padding:4px 10px;font-size:12px;background:#2a2f3a;margin-right:6px}
 .del{background:none;font-size:12px;padding:0 4px;color:#888}
 </style>
+<script>
+window.addEventListener("error", function (e) { var x = document.getElementById("err"); if (x) x.textContent = "JS error: " + e.message; });
+setTimeout(function () { if (!window.__ok) { var x = document.getElementById("err"); if (x) x.textContent = "App load nahi hui: internet/adblock check karo ya page refresh karo"; } }, 5000);
+</script>
 </head>
 <body>
 <div id="join">
@@ -177,6 +181,7 @@ function send() {
   push(ref(db, "messages"), { uid: me.uid, user: me.displayName, text: text.slice(0, 500), ts: serverTimestamp() });
   $("text").value = "";
 }
+window.__ok = true;
 $("send").onclick = send;
 
 function refreshMute() {
