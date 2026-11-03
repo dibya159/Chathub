@@ -3,83 +3,112 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#10131b">
-<title>Dosto ka Chat</title>
+<meta name="theme-color" content="#101522">
+<title>Chat Hub</title>
 <style>
+:root{color-scheme:dark;--bg:#0d111b;--panel:#171e2c;--line:#283247;--blue:#557cff;--text:#edf2ff;--muted:#9aa8c2;--red:#e45d70;--green:#57d69b}
 *{box-sizing:border-box}
-body{margin:0;font-family:system-ui,sans-serif;background:#0f1115;color:#e8e8ea;height:100dvh;display:flex;flex-direction:column}
-button{padding:11px 16px;border:0;border-radius:10px;background:#4f7cff;color:#fff;font-size:15px;cursor:pointer}
-button:disabled{opacity:.55;cursor:wait}
-input{width:100%;padding:12px;margin-top:10px;border-radius:10px;border:1px solid #333;background:#1b1e25;color:inherit;font-size:16px;min-width:0}
-#join{margin:auto;text-align:center;padding:24px;width:min(380px,92%)}
-#join p{color:#aeb4c2;font-size:13px}
-#join button{margin-top:12px;width:100%}
-#swap{background:none;color:#8fb0ff;font-size:14px;margin-top:4px}
-#err{color:#ff8585;min-height:22px;margin-top:8px;font-size:14px}
-#app{display:none;flex-direction:column;height:100%;min-height:0}
-header{padding:10px 14px;background:#171a21;border-bottom:1px solid #262a33;font-size:14px}
-#top{display:flex;justify-content:space-between;align-items:center;gap:12px}
-#out{padding:7px 11px;font-size:12px;background:#2a2f3a}
-#online{color:#6ee7a0;margin-top:4px;overflow-x:auto;white-space:nowrap;font-size:12px}
-#msgs{flex:1;min-height:0;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:9px}
-.m{max-width:82%;padding:9px 12px;border-radius:13px;background:#1b1e25;word-wrap:break-word;overflow-wrap:anywhere}
-.m b{display:block;font-size:12px;color:#9bb8ff;margin-bottom:3px}
-.m.me{align-self:flex-end;background:#2b4bb5}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif;height:100dvh}
+button,input{font:inherit}
+button{border:0;border-radius:11px;padding:10px 14px;background:var(--blue);color:white;font-weight:650;cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+input{width:100%;padding:12px;border-radius:11px;border:1px solid var(--line);background:#0f1522;color:var(--text);outline:none}
+input:focus{border-color:var(--blue)}
+#join{width:min(390px,92%);margin:12vh auto 0;padding:25px;background:var(--panel);border:1px solid var(--line);border-radius:20px;box-shadow:0 18px 60px #0005}
+.logo{font-size:25px;font-weight:850;letter-spacing:.3px;margin-bottom:5px}.sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+#join input{margin:7px 0}#join button{width:100%;margin-top:10px}
+#swap{background:transparent;color:#a9bdff;font-weight:500}
+#err{color:#ff8290;min-height:22px;font-size:13px;margin-top:8px}
+#app{display:none;height:100dvh;max-width:1000px;margin:auto;flex-direction:column;background:#111725}
+header{padding:12px 15px;background:var(--panel);border-bottom:1px solid var(--line)}
+#top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+#brand{font-weight:850;font-size:18px}#brand small{display:block;color:var(--muted);font-size:11px;font-weight:500}
+.header-actions{display:flex;gap:7px;align-items:center}
+#out{background:#303b50;padding:8px 11px;font-size:13px}
+#adminOpen{display:none;background:#8b65df;padding:8px 11px;font-size:13px}
+#online{font-size:12px;color:var(--green);margin-top:8px;overflow-x:auto;white-space:nowrap}
+#notice{display:none;padding:9px 14px;background:#382c17;color:#ffdb8a;font-size:13px;text-align:center}
+#msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:9px}
+.m{position:relative;max-width:min(82%,560px);padding:9px 12px;border:1px solid #29364c;border-radius:14px;background:#1a2435;overflow-wrap:anywhere}
+.m.me{align-self:flex-end;background:#29458a;border-color:#3b5fb3}
+.m b{display:block;color:#a9c2ff;font-size:12px;margin-bottom:3px}
 .m.me b{display:none}
-.m img{display:block;max-width:min(260px,65vw);max-height:300px;object-fit:contain;border-radius:9px;margin-top:5px}
-.m a{color:#fff}
-.sys{align-self:center;font-size:12px;color:#9298a5;text-align:center}
-#bar{display:flex;gap:7px;align-items:center;padding:10px;background:#171a21}
-#bar input{margin:0;flex:1}
-#send{padding:11px 13px}
-#photoBtn{padding:11px 12px;background:#303746}
-#photoInput{display:none}
-#hint{font-size:11px;color:#aeb4c2;padding:0 12px 8px;background:#171a21}
-#status{font-size:12px;color:#ffd27a;min-height:16px;padding:0 12px 5px;background:#171a21}
+.m .time{font-size:10px;color:#b6c2d8;margin-left:8px}
+.m .del{position:absolute;right:5px;top:4px;padding:2px 6px;font-size:10px;background:#a83d52}
+.sys{align-self:center;color:var(--muted);font-size:12px;padding:5px}
+#bar{display:flex;gap:8px;padding:10px;background:var(--panel);border-top:1px solid var(--line)}
+#bar input{min-width:0}#send{min-width:68px}
+#adminPanel{display:none;position:fixed;inset:0;background:#050811d9;z-index:5;padding:14px;overflow:auto}
+.admin-card{max-width:650px;margin:4vh auto;background:#171e2c;border:1px solid #34415a;border-radius:18px;padding:17px}
+.admin-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.admin-head h2{margin:0;font-size:20px}
+.close{background:#303b50}
+.section{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}
+.section h3{font-size:14px;margin:0 0 9px}
+.row{display:flex;gap:8px;margin-top:8px}.row>*{min-width:0}
+.danger{background:#a83d52}.secondary{background:#303b50}
+#adminMsg{font-size:12px;color:var(--green);min-height:18px;margin-top:8px}
+.userrow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid #293247;font-size:13px}
+.userrow button{padding:6px 9px;font-size:12px}
+.smallnote{font-size:11px;color:var(--muted);line-height:1.5;margin-top:9px}
+@media(min-width:700px){body{padding:14px}#app{height:calc(100dvh - 28px);border:1px solid var(--line);border-radius:18px;overflow:hidden}}
 </style>
 </head>
 <body>
 <div id="join">
-  <h2 id="title">Dosto ka Chat</h2>
-  <p>Ek username aur password se group mein shamil ho.</p>
+  <div class="logo">💬 Chat Hub</div>
+  <div class="sub">Apne doston ke saath ek hi live group mein.</div>
+  <h3 id="title">Login</h3>
   <input id="name" maxlength="20" placeholder="Username" autocomplete="username">
-  <input id="pass" type="password" placeholder="Password (min 6 characters)" autocomplete="current-password">
+  <input id="pass" type="password" placeholder="Password (minimum 6 characters)" autocomplete="current-password">
   <button id="go">Login</button>
   <button id="swap">Naya account banana hai?</button>
-  <div id="err" role="alert"></div>
+  <div id="err"></div>
 </div>
 
 <div id="app">
   <header>
-    <div id="top"><b>Dosto ka Chat</b><button id="out">Logout</button></div>
+    <div id="top">
+      <div id="brand">💬 Chat Hub <small id="welcome">Doston ka group chat</small></div>
+      <div class="header-actions">
+        <button id="adminOpen">Admin</button>
+        <button id="out">Logout</button>
+      </div>
+    </div>
     <div id="online">Connecting...</div>
   </header>
-  <div id="msgs" aria-live="polite"></div>
-  <div id="status"></div>
+  <div id="notice"></div>
+  <div id="msgs"></div>
   <div id="bar">
-    <input id="text" maxlength="1000" placeholder="Message likho..." autocomplete="off">
-    <input id="photoInput" type="file" accept="image/*">
-    <button id="photoBtn" title="Photo bhejo" aria-label="Photo bhejo">＋</button>
+    <input id="text" maxlength="500" placeholder="Message likho..." autocomplete="off">
     <button id="send">Send</button>
   </div>
-  <div id="hint">Photo limit: 5 MB. Sirf image files allowed hain.</div>
+</div>
+
+<div id="adminPanel">
+ <div class="admin-card">
+  <div class="admin-head"><h2>🛡️ Admin Panel</h2><button class="close" id="adminClose">Close</button></div>
+  <div class="smallnote">Ye panel sirf configured Super Admin account ko dikhaya jayega.</div>
+  <div class="section">
+   <h3>Group controls</h3>
+   <div class="row"><button id="toggleChat" class="secondary">Chat status check...</button></div>
+   <div class="row"><input id="announcement" maxlength="250" placeholder="Group announcement likho"><button id="announce">Post</button></div>
+  </div>
+  <div class="section">
+   <h3>Users online</h3>
+   <div id="userList" class="smallnote">Loading users...</div>
+   <div class="row"><input id="banUid" placeholder="User UID to ban / unban"><button id="banByUid" class="danger">Ban UID</button></div>
+   <div class="smallnote">Online list se kisi ko ban/unban kar sakte ho. UID se bhi ban kar sakte ho.</div>
+  </div>
+  <div id="adminMsg"></div>
+ </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  updateProfile, onAuthStateChanged, signOut
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {
-  getDatabase, ref, push, set, onValue, onChildAdded, onDisconnect,
-  query, limitToLast, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-import {
-  getStorage, ref as storageRef, uploadBytes, getDownloadURL
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, push, set, get, remove, update, onValue, onChildAdded, onDisconnect, query, limitToLast, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// Apne Firebase project ka config yahan rakhein.
 const firebaseConfig = {
   apiKey: "AIzaSyBZkB5tUPEPCxFiAyPJaThrpof7NO_ffFw",
   authDomain: "chatappdibya.firebaseapp.com",
@@ -88,209 +117,186 @@ const firebaseConfig = {
   appId: "1:266503318985:web:0c3d26fd2c4d5e470d8c18"
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
-const auth = getAuth(firebaseApp);
-const db = getDatabase(firebaseApp);
-const storage = getStorage(firebaseApp);
+// Super Admin UID supplied by you.
+const SUPER_ADMIN_UID = "TkdZFaOuM8huIE3I5l6TSWHfHnY2";
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app), db = getDatabase(app);
 const $ = id => document.getElementById(id);
-
-let me = null;
-let signup = false;
-let started = false;
-let busy = false;
+let me = null, signup = false, started = false, isAdmin = false, chatEnabled = true;
 const seen = new Set();
-
-function showError(message) { $("err").textContent = message; }
-function setStatus(message = "") { $("status").textContent = message; }
-
-function friendlyError(error) {
-  const messages = {
-    "auth/email-already-in-use": "Ye username pehle se liya gaya hai. Dusra username try karo.",
-    "auth/invalid-credential": "Username ya password galat hai.",
-    "auth/user-not-found": "Ye account nahi mila. Pehle account banao.",
-    "auth/wrong-password": "Password galat hai.",
-    "auth/weak-password": "Password kam se kam 6 characters ka rakho.",
-    "auth/operation-not-allowed": "Firebase Console mein Email/Password sign-in enable karo.",
-    "auth/network-request-failed": "Internet connection check karo.",
-    "auth/too-many-requests": "Bahut attempts hue. Thodi der baad try karo.",
-    "permission-denied": "Firebase Realtime Database rules access rok rahe hain.",
-    "storage/unauthorized": "Firebase Storage rules upload ko allow nahi kar rahe.",
-    "storage/quota-exceeded": "Firebase Storage quota exceed ho gaya."
-  };
-  return messages[error.code] || `Error: ${error.code || error.message || "Unknown error"}`;
-}
 
 $("swap").onclick = () => {
   signup = !signup;
-  $("title").textContent = signup ? "Naya account" : "Dosto ka Chat";
+  $("title").textContent = signup ? "Naya account" : "Login";
   $("go").textContent = signup ? "Account banao" : "Login";
   $("swap").textContent = signup ? "Pehle se account hai? Login" : "Naya account banana hai?";
-  showError("");
+  $("err").textContent = "";
 };
 
 async function submit() {
-  if (busy) return;
-  const name = $("name").value.trim();
-  const pass = $("pass").value;
-  if (!/^[A-Za-z0-9_]{2,20}$/.test(name)) {
-    showError("Username 2-20 letters, numbers ya _ ka ho. Space mat use karo.");
-    return;
-  }
-  if (pass.length < 6) {
-    showError("Password kam se kam 6 characters ka hona chahiye.");
-    return;
-  }
-
-  // Firebase Auth email/password ko use karke username-only interface diya gaya hai.
-  // Lowercase mapping ki wajah se Dibya aur dibya ek hi username maane jayenge.
+  const name = $("name").value.trim(), pass = $("pass").value;
+  if (!/^[A-Za-z0-9_]{2,20}$/.test(name)) { $("err").textContent = "Username 2-20 letters/numbers/_ ka hona chahiye."; return; }
+  if (pass.length < 6) { $("err").textContent = "Password kam se kam 6 characters ka hona chahiye."; return; }
   const email = name.toLowerCase() + "@dosto.chat";
-  busy = true;
-  $("go").disabled = true;
-  showError("");
+  $("go").disabled = true; $("err").textContent = "";
   try {
     if (signup) {
-      const credential = await createUserWithEmailAndPassword(auth, email, pass);
-      await updateProfile(credential.user, { displayName: name });
+      const c = await createUserWithEmailAndPassword(auth, email, pass);
+      await updateProfile(c.user, { displayName: name });
     } else {
       await signInWithEmailAndPassword(auth, email, pass);
     }
-  } catch (error) {
-    showError(friendlyError(error));
-  } finally {
-    busy = false;
-    $("go").disabled = false;
-  }
+  } catch (e) {
+    const messages = {
+      "auth/email-already-in-use":"Ye username pehle se liya gaya hai.",
+      "auth/invalid-credential":"Username ya password galat hai.",
+      "auth/user-not-found":"Ye account nahi mila.",
+      "auth/wrong-password":"Password galat hai.",
+      "auth/operation-not-allowed":"Firebase mein Email/Password sign-in enable karo."
+    };
+    $("err").textContent = messages[e.code] || ("Error: " + e.message);
+  } finally { $("go").disabled = false; }
 }
 $("go").onclick = submit;
-$("pass").onkeydown = event => { if (event.key === "Enter") submit(); };
-$("name").onkeydown = event => { if (event.key === "Enter") $("pass").focus(); };
-$("out").onclick = async () => {
-  try { await signOut(auth); location.reload(); }
-  catch (error) { setStatus(friendlyError(error)); }
-};
+$("pass").onkeydown = e => { if (e.key === "Enter") submit(); };
+$("out").onclick = () => signOut(auth);
 
 onAuthStateChanged(auth, async user => {
-  if (!user) {
-    me = null;
-    started = false;
-    $("join").style.display = "block";
-    $("app").style.display = "none";
-    return;
-  }
-  if (started) return;
-  started = true;
-  me = user;
+  if (!user || started) return;
+  try {
+    const banSnap = await get(ref(db, "bans/" + user.uid));
+    if (banSnap.exists() && banSnap.val() === true) {
+      await signOut(auth);
+      $("err").textContent = "Is account ko group se ban kiya gaya hai.";
+      return;
+    }
+  } catch(e) { console.error(e); }
+  started = true; me = user; isAdmin = user.uid === SUPER_ADMIN_UID;
   $("join").style.display = "none";
   $("app").style.display = "flex";
+  $("welcome").textContent = "Logged in as " + (user.displayName || "User");
+  $("adminOpen").style.display = isAdmin ? "inline-block" : "none";
 
-  const myName = user.displayName || user.email.split("@")[0];
   const myRef = ref(db, "online/" + user.uid);
-  try {
-    await set(myRef, myName);
-    onDisconnect(myRef).remove();
+  await set(myRef, user.displayName || "User");
+  onDisconnect(myRef).remove();
 
-    onValue(ref(db, "online"), snapshot => {
-      const names = Object.values(snapshot.val() || {});
-      $("online").textContent = `● Online (${names.length}): ${names.join(", ")}`;
-    }, error => setStatus(friendlyError(error)));
+  onValue(ref(db, "online"), snap => {
+    const users = snap.val() || {};
+    const names = Object.values(users);
+    $("online").textContent = "● Online (" + names.length + "): " + names.join(", ");
+    if (isAdmin) renderUsers(users);
+  });
 
-    onChildAdded(query(ref(db, "messages"), limitToLast(100)), snapshot => {
-      if (seen.has(snapshot.key)) return;
-      seen.add(snapshot.key);
-      draw({ key: snapshot.key, ...snapshot.val() });
-    }, error => setStatus(friendlyError(error)));
-  } catch (error) {
-    setStatus(friendlyError(error));
-  }
+  onValue(ref(db, "settings/chatEnabled"), snap => {
+    chatEnabled = snap.exists() ? snap.val() !== false : true;
+    $("notice").style.display = chatEnabled ? "none" : "block";
+    $("notice").textContent = "Admin ne filhaal chat ko pause kiya hai.";
+    $("text").disabled = !chatEnabled;
+    $("send").disabled = !chatEnabled;
+    if (isAdmin) $("toggleChat").textContent = chatEnabled ? "Disable group chat" : "Enable group chat";
+  });
+
+  onValue(ref(db, "announcements/current"), snap => {
+    const a = snap.val();
+    if (a && a.text) {
+      $("notice").style.display = "block";
+      $("notice").textContent = "📢 " + a.text;
+    } else if (chatEnabled) $("notice").style.display = "none";
+  });
+
+  onChildAdded(query(ref(db, "messages"), limitToLast(150)), snap => {
+    if (seen.has(snap.key)) return;
+    seen.add(snap.key);
+    draw({key:snap.key, ...snap.val()});
+  });
 });
 
-function draw(message) {
-  const item = document.createElement("div");
-  if (message.system) {
-    item.className = "sys";
-    item.textContent = message.text || "";
-  } else {
-    item.className = "m" + (message.uid === me?.uid ? " me" : "");
-    if (message.uid !== me?.uid) {
-      const author = document.createElement("b");
-      author.textContent = message.user || "Unknown";
-      item.appendChild(author);
-    }
-    if (message.text) {
-      const text = document.createElement("div");
-      text.textContent = message.text;
-      item.appendChild(text);
-    }
-    if (message.imageUrl) {
-      const image = document.createElement("img");
-      image.src = message.imageUrl;
-      image.alt = "Shared photo";
-      image.loading = "lazy";
-      item.appendChild(image);
+function draw(m) {
+  const d = document.createElement("div");
+  if (m.system) { d.className = "sys"; d.textContent = m.text || ""; }
+  else {
+    d.className = "m" + (m.uid === me?.uid ? " me" : "");
+    const b = document.createElement("b"); b.textContent = m.user || "Unknown";
+    const t = document.createElement("span"); t.textContent = m.text || "";
+    d.append(b,t);
+    if (isAdmin) {
+      const del = document.createElement("button");
+      del.className = "del"; del.textContent = "Delete";
+      del.onclick = async () => {
+        if (!confirm("Is message ko delete karna hai?")) return;
+        try { await remove(ref(db, "messages/" + m.key)); d.remove(); adminFeedback("Message deleted."); }
+        catch(e) { adminFeedback("Delete failed: " + e.message, true); }
+      };
+      d.append(del);
     }
   }
-  $("msgs").appendChild(item);
+  $("msgs").append(d);
   $("msgs").scrollTop = $("msgs").scrollHeight;
 }
 
 async function send() {
   const text = $("text").value.trim();
-  if (!text || !me) return;
+  if (!text || !me || !chatEnabled) return;
   $("send").disabled = true;
   try {
-    await push(ref(db, "messages"), {
-      uid: me.uid,
-      user: me.displayName || me.email.split("@")[0],
-      text: text.slice(0, 1000),
-      ts: serverTimestamp()
-    });
+    await push(ref(db, "messages"), {uid:me.uid,user:me.displayName || "User",text:text.slice(0,500),ts:serverTimestamp()});
     $("text").value = "";
-    setStatus("");
-  } catch (error) {
-    setStatus(friendlyError(error));
-  } finally {
-    $("send").disabled = false;
-  }
+  } catch(e) { alert("Message send nahi hua: " + e.message); }
+  finally { $("send").disabled = !chatEnabled; }
 }
 $("send").onclick = send;
-$("text").onkeydown = event => { if (event.key === "Enter") send(); };
+$("text").onkeydown = e => { if (e.key === "Enter") send(); };
 
-$("photoBtn").onclick = () => $("photoInput").click();
-$("photoInput").onchange = async event => {
-  const file = event.target.files?.[0];
-  event.target.value = "";
-  if (!file || !me) return;
-
-  if (!file.type.startsWith("image/")) {
-    setStatus("Sirf image file select karo.");
-    return;
-  }
-  if (file.size > 5 * 1024 * 1024) {
-    setStatus("Photo 5 MB se chhoti honi chahiye.");
-    return;
-  }
-
-  $("photoBtn").disabled = true;
-  setStatus("Photo upload ho rahi hai...");
+$("adminOpen").onclick = () => { if (isAdmin) $("adminPanel").style.display = "block"; };
+$("adminClose").onclick = () => $("adminPanel").style.display = "none";
+function adminFeedback(message, error=false) {
+  $("adminMsg").textContent = message;
+  $("adminMsg").style.color = error ? "#ff8290" : "#57d69b";
+}
+function renderUsers(users) {
+  const box = $("userList"); box.replaceChildren();
+  const entries = Object.entries(users);
+  if (!entries.length) { box.textContent = "Abhi koi online nahi hai."; return; }
+  entries.forEach(([uid,name]) => {
+    const row = document.createElement("div"); row.className = "userrow";
+    const label = document.createElement("span"); label.textContent = name + (uid === SUPER_ADMIN_UID ? " (Super Admin)" : "");
+    const btn = document.createElement("button"); btn.className = "danger"; btn.textContent = "Ban";
+    btn.disabled = uid === SUPER_ADMIN_UID;
+    btn.onclick = async () => {
+      if (uid === SUPER_ADMIN_UID || !confirm(name + " ko ban karna hai?")) return;
+      try { await set(ref(db,"bans/"+uid),true); adminFeedback(name+" banned."); }
+      catch(e) { adminFeedback("Ban failed: "+e.message,true); }
+    };
+    const unban = document.createElement("button"); unban.className = "secondary"; unban.textContent = "Unban";
+    unban.onclick = async () => {
+      try { await remove(ref(db,"bans/"+uid)); adminFeedback(name+" unbanned."); }
+      catch(e) { adminFeedback("Unban failed: "+e.message,true); }
+    };
+    const actions = document.createElement("span"); actions.append(btn,unban);
+    row.append(label,actions); box.append(row);
+  });
+}
+$("toggleChat").onclick = async () => {
+  if (!isAdmin) return;
+  try { await set(ref(db,"settings/chatEnabled"),!chatEnabled); adminFeedback(chatEnabled ? "Group chat disabled." : "Group chat enabled."); }
+  catch(e) { adminFeedback("Action failed: "+e.message,true); }
+};
+$("announce").onclick = async () => {
+  if (!isAdmin) return;
+  const text = $("announcement").value.trim();
+  if (!text) return;
   try {
-    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-80);
-    const path = `chatImages/${me.uid}/${Date.now()}_${safeName}`;
-    const fileRef = storageRef(storage, path);
-    await uploadBytes(fileRef, file, { contentType: file.type });
-    const imageUrl = await getDownloadURL(fileRef);
-    await push(ref(db, "messages"), {
-      uid: me.uid,
-      user: me.displayName || me.email.split("@")[0],
-      imageUrl,
-      imageName: safeName,
-      ts: serverTimestamp()
-    });
-    setStatus("");
-  } catch (error) {
-    setStatus(friendlyError(error));
-  } finally {
-    $("photoBtn").disabled = false;
-  }
+    await set(ref(db,"announcements/current"),{text,by:me.uid,ts:serverTimestamp()});
+    $("announcement").value = ""; adminFeedback("Announcement posted.");
+  } catch(e) { adminFeedback("Announcement failed: "+e.message,true); }
+};
+$("banByUid").onclick = async () => {
+  if (!isAdmin) return;
+  const uid = $("banUid").value.trim();
+  if (!uid || uid === SUPER_ADMIN_UID) { adminFeedback("Valid user UID daalo.",true); return; }
+  try { await set(ref(db,"bans/"+uid),true); $("banUid").value=""; adminFeedback("User banned."); }
+  catch(e) { adminFeedback("Ban failed: "+e.message,true); }
 };
 </script>
 </body>
